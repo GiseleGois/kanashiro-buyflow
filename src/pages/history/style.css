@@ -1,0 +1,116 @@
+/* style.css */
+
+.history-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-image: url('../../assets/7.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+
+  .history-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .history-navbar {
+    display: flex;
+    align-items: center;
+  }
+
+  .history-out-button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #FFF;
+    margin-right: 10px;
+  }
+
+  .orders-list {
+    width: 100%;
+  }
+
+  .order-item {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  p {
+    font-size: 18px;
+    margin: 5px 0;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    font-size: 16px;
+    color: #3C3C3C;
+    margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .item-name {
+    /* Estilize o nome do item */
+    font-size: 16px;
+    color: #3C3C3C;
+    margin: 5px 0;
+    flex: 1; /* Ocupa o espaço disponível, empurrando o texto para a esquerda */
+  }
+
+  .item-quantity {
+    /* Estilize a quantidade do item */
+    font-size: 16px;
+    color: #7D7D7D;
+    margin: 5px 0;
+  }
+
+  .orderTotal {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 10px;
+    font-weight: bold; /* Deixa o total em negrito */
+  }
+
+  .orderDate, .orderTotal {
+    font-weight: bold; /* Deixa a data e o total em negrito */
+  }
+
+  .loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px; /* Ajuste a altura conforme necessário */
+  }
+
+  .spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #333; /* Cor do spinner */
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 2s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

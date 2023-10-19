@@ -1,0 +1,129 @@
+.schedule-container {
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  background-image: url('../../assets/7.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+}
+
+table th,
+table td {
+  border: 1px solid #ccc;
+  padding: 2%;
+  text-align: left;
+}
+
+table th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+}
+
+table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+table tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+/* Hover effect on table rows */
+table tr:hover {
+  background-color: #c0c0c0;
+}
+
+/* Add some spacing between the table and the container */
+.schedule-container table {
+  margin: 20px 0;
+}
+
+.product-name {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* Estilizando o subtítulo */
+.product-subtitle {
+  color: #9b9797cf;
+  font-size: 12px;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.total-container {
+  background-color: #5cb85c;
+  /* Cor de fundo verde */
+  border: 2px solid #4cae4c;
+  /* Borda verde escura */
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+}
+
+
+.confirm-button {
+  background-color: #fff;
+  color: #5cb85c;
+  /* Cor do texto verde */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 10px 20px;
+  margin-top: 20px;
+  transition: background-color 0.3s;
+}
+
+.confirm-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  color: #999;
+}
+
+.confirm-button:hover {
+  background-color: #e5e5e5;
+}
+
+@media screen and (max-width: 768px) {
+  .schedule-container {
+    padding: 5%;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    margin: 5% 0;
+  }
+
+  table th,
+  table td {
+    padding: 2%;
+    font-size: 14px;
+  }
+
+  .total-container {
+    padding: 10px;
+  }
+
+  .quantity-input {
+    width: 80px;
+  }
+
+  .confirm-button {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+}
