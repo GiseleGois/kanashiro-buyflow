@@ -1,4 +1,4 @@
-const formattedOrders = (orders, WEEK_DAYS) => {
+export const formattedOrders = (orders, WEEK_DAYS) => {
   return orders.map((order) => {
     const currentDate = new Date(order.scheduled._seconds * 1000 + order.scheduled._nanoseconds / 1000000);
     const localDate = new Date(currentDate.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
@@ -7,15 +7,10 @@ const formattedOrders = (orders, WEEK_DAYS) => {
   });
 }
 
-const sortedOrders = (orders) => {
+export const sortedOrders = (orders) => {
   return orders.sort((a, b) => {
     const dateA = new Date(a.scheduled._seconds * 1000 + a.scheduled._nanoseconds / 1000000);
     const dateB = new Date(b.scheduled._seconds * 1000 + b.scheduled._nanoseconds / 1000000);
     return dateB - dateA;
   });
 }
-
-module.exports = {
-  formattedOrders,
-  sortedOrders,
-};

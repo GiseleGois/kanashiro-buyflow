@@ -4,8 +4,8 @@ import { useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { getOrders } from '../../services';
-import { formattedOrders, sortedOrders } from '../../commons/helpers';
 import { WEEK_DAYS } from '../../commons/enums';
+import { formattedOrders, sortedOrders } from '../../commons/helpers';
 
 function History() {
   const history = useHistory();
