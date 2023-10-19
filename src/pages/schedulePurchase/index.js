@@ -68,7 +68,7 @@ function ShoppingCart() {
           product: product.name,
           amount: product.amount,
           total: product.amount * productQuantities[product.id],
-          quantity: productQuantities[product.id],
+          quantity: parseInt(productQuantities[product.id]),
           productId: product.id,
           type: product.type,
         }));
