@@ -16,6 +16,16 @@ const listProducts = async () => {
   }
 };
 
+const listProductsWithDiscount = async () => {
+  try {
+    const { data } = await axios.get(`${url}/discount`);
+    const getProducts = data.filter(product => product.type !== 'papel' && product.type !== 'entrega-p' && product.type !== 'entrega-d');
+    return getProducts;
+  } catch (error) {
+    throw new Error(`Falha ao obter todos os produtos com desconto: ${error}`);
+  }
+};
+
 const createNewUser = async (payload) => {
   try {
     const userCredential = await auth.createUserWithEmailAndPassword(
@@ -40,26 +50,6 @@ const createNewUser = async (payload) => {
     return data;
   } catch (error) {
     throw new Error(`Falha ao registrar um novo usuário: ${error.message}`);
-  }
-};
-
-const getAuthorizationToLogin = async (payload) => {
-  try {
-    const userCredential = await auth.signInWithEmailAndPassword(payload.email, payload.password);
-
-    const { user } = userCredential;
-    if (!user) {
-      throw new Error('Usuário não encontrado.');
-    }
-
-    const { data } = await axios.get(`${url}/check-permission/${user.uid}`);
-    return data;
-  } catch (error) {
-    return {
-      data: error.response.data,
-      message: error.message,
-      code: error.response.status
-    }
   }
 };
 
@@ -104,8 +94,8 @@ const getOrders = async () => {
 
 export {
   listProducts,
+  listProductsWithDiscount,
   createNewUser,
-  getAuthorizationToLogin,
   userById,
   sendOrder,
   getOrders,

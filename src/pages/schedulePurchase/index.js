@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './style.css';
 import SchedulePurchase from '../../components/schedulePurchase';
 import Loading from '../../components/loading';
-import { listProducts, sendOrder } from '../../services';
+import { listProducts, listProductsWithDiscount, sendOrder, userById } from '../../services';
 import ConfirmModal from '../../commons/modal/confirmModal';
 import GenericModal from '../../commons/modal/genericModal';
 import { useHistory } from 'react-router-dom';
@@ -14,6 +14,7 @@ function ShoppingCart() {
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [local, setLocal] = useState();
+  const [userHasDiscount, setUserHasDiscount] = useState();
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
@@ -21,11 +22,36 @@ function ShoppingCart() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
-  const handlerGetProducts = async () => {
-    const getAllProducts = await listProducts();
-    setProducts(getAllProducts);
-    setIsLoading(false);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const user = await userById();
+        setUserHasDiscount(user[0].discount === true);
+
+        if (user[0].discount === true) {
+          console.log('USER', user[0].discount);
+          const productsWithDiscount = await listProductsWithDiscount();
+          console.log('PRODUCTS-WITH-DISCOUNT', productsWithDiscount);
+
+          setProducts(productsWithDiscount);
+        } else {
+          console.log('USER', user[0].discount);
+
+          const allProducts = await listProducts();
+          console.log('PRODUCTS-WITH', allProducts);
+
+          setProducts(allProducts);
+        }
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error checking user discount or fetching products:', error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleSchedulePurchase = (date) => {
     const location = window.location.pathname;
@@ -76,7 +102,6 @@ function ShoppingCart() {
       if (selectedItems.length === 0) {
         setError('Por favor, selecione pelo menos um produto antes de finalizar a compra.');
       } else {
-        console.log(selectedDate);
         const checkout = await sendOrder(selectedItems, total, local, selectedDate);
         if (checkout) {
           setSuccessMessage('Pedido feito com sucesso!');
@@ -89,10 +114,6 @@ function ShoppingCart() {
       setError(`Erro ao finalizar a compra: ${error.message}`);
     }
   };
-
-  useEffect(() => {
-    handlerGetProducts();
-  }, []);
 
   return (
     <div className="schedule-container">
@@ -120,7 +141,7 @@ function ShoppingCart() {
                 <tr key={product.id}>
                   <td>
                     <span className="product-name">{product.name}</span>
-                    <p className="product-subtitle">Valor unitário: R$ {product.amount.toFixed(2)}</p>
+                    <p className="product-subtitle">Valor unitário: R$ {parseFloat(product.amount).toFixed(2)}</p>
                   </td>
                   <td>
                     <input
