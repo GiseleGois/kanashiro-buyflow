@@ -53,6 +53,27 @@ const createNewUser = async (payload) => {
   }
 };
 
+const getAuthorizationToLogin = async (payload) => {
+  try {
+    const userCredential = await auth.signInWithEmailAndPassword(payload.email, payload.password);
+
+    const { user } = userCredential;
+    if (!user) {
+      throw new Error('Usuário não encontrado.');
+    }
+
+    const { data } = await axios.get(`${url}/user-by-id/${auth.currentUser.uid}`);
+    return data;
+  } catch (error) {
+    return {
+      data: error.response.data,
+      message: error.message,
+      code: error.response.status
+    }
+  }
+};
+
+
 const userById = async () => {
   try {
     const { data } = await axios.get(`${url}/user-by-id/${auth.currentUser.uid}`);
@@ -95,6 +116,7 @@ const getOrders = async () => {
 export {
   listProducts,
   listProductsWithDiscount,
+  getAuthorizationToLogin,
   createNewUser,
   userById,
   sendOrder,

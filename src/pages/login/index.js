@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import './style.css';
 import Modal from '../../commons/modal/genericModal';
 import enums from '../../commons/enums';
-import { userById } from '../../services';
+import { getAuthorizationToLogin } from '../../services';
 
 function Login() {
   const [loading, setLoading] = useState(false);
@@ -21,7 +21,7 @@ function Login() {
     };
 
     try {
-      const userLogin = await userById(formLogin);
+      const userLogin = await getAuthorizationToLogin(formLogin);
       if (userLogin[0].authorizer === true) {
         setLoading(true);
         history.push('/home');
