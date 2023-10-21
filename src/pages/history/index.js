@@ -52,6 +52,7 @@ function History() {
           {orders.map((order, index) => (
             <div key={index} className="order-item">
               <p>{order.formattedDate}</p>
+              <p>Local do pedido: {order.local}</p>
               <div>
                 <ul>
                   {order.items.map((item, itemIndex) => (
