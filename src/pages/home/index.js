@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './style.css';
 import { auth } from '../../firebase';
 import { useHistory } from 'react-router-dom';
@@ -11,6 +11,14 @@ function Home() {
   const [selectedLocal, setSelectedLocal] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    if (user && user[0].name) {
+      setUserName(user[0].name);
+    }
+  }, []);
 
   const handleLogout = () => {
     auth.signOut().then(() => {
@@ -55,7 +63,7 @@ function Home() {
         </nav>
 
         <div id="home" className="header-content">
-          <h1>Bem vindo(a)</h1>
+          <h1>Bem vindo(a), {userName}</h1>
         </div>
       </header>
 

@@ -23,12 +23,14 @@ function Login() {
     try {
       const userLogin = await getAuthorizationToLogin(formLogin);
       if (userLogin[0].authorizer === true) {
+        sessionStorage.setItem('user', JSON.stringify(userLogin));
         setLoading(true);
         history.push('/home');
       }
       setIsModalOpen(true);
       setModalMessage(enums.LOGIN_RESPONSE.ACCESS_DENIED);
     } catch (error) {
+      // Trate erros de autenticação aqui
     } finally {
       setLoading(false);
     }
@@ -44,9 +46,9 @@ function Login() {
         <div className="login-card">
           <h2 className="title-field">Kanashiro Pasteis</h2>
           <form onSubmit={handleLogin}>
-          {isModalOpen && (
-            <Modal message={modalMessage} onClose={() => setIsModalOpen(false)} />
-          )}
+            {isModalOpen && (
+              <Modal message={modalMessage} onClose={() => setIsModalOpen(false)} />
+            )}
             <input type="email" id="email" name="email" className="input-field" placeholder='Digite seu email' />
             <input type="password" id="password" name="password" className="input-field" placeholder='Digite sua senha' />
             <div className="button-container">

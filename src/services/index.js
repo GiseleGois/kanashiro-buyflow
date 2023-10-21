@@ -104,14 +104,16 @@ const sendOrder = async (selectedItems, total, location, selectedDate) => {
   }
 };
 
-const getOrders = async () => {
+const getOrders = async (uuid) => {
   try {
-    const { data } = await axios.get(`${url}/orders-by-id/${auth.currentUser.uid}`);
+    const userUUID = uuid || auth.currentUser.uid;
+    const { data } = await axios.get(`${url}/orders-by-id/${userUUID}`);
     return data;
   } catch (error) {
     throw new Error(`Falha ao obter os pedidos: ${error}`);
   }
 };
+
 
 export {
   listProducts,

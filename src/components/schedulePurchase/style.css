@@ -23,6 +23,16 @@
   width: 90%; /* Usando largura relativa para melhor responsividade */
   max-width: 400px; /* Largura máxima para evitar que o modal fique muito largo */
 }
+.purchase-modal-content {
+  z-index: 10;
+  /* Outros estilos para o modal de calendário */
+}
+
+.confirmation-modal-content {
+  z-index: 20; /* Um valor maior para garantir que fique por cima */
+  /* Outros estilos para o modal de confirmação */
+}
+
 
 .calendar {
   width: 100%;

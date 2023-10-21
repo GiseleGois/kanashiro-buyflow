@@ -27,22 +27,14 @@ function ShoppingCart() {
       try {
         const user = await userById();
         setUserHasDiscount(user[0].discount === true);
-
         if (user[0].discount === true) {
-          console.log('USER', user[0].discount);
           const productsWithDiscount = await listProductsWithDiscount();
-          console.log('PRODUCTS-WITH-DISCOUNT', productsWithDiscount);
 
           setProducts(productsWithDiscount);
         } else {
-          console.log('USER', user[0].discount);
-
           const allProducts = await listProducts();
-          console.log('PRODUCTS-WITH', allProducts);
-
           setProducts(allProducts);
         }
-
         setIsLoading(false);
       } catch (error) {
         console.error('Error checking user discount or fetching products:', error);
@@ -53,10 +45,8 @@ function ShoppingCart() {
     fetchData();
   }, []);
 
-  const handleSchedulePurchase = (date) => {
-    const location = window.location.pathname;
-    const localPart = location.substring('/schedule-purchase/'.length);
-    setLocal(localPart);
+  const handleSchedulePurchase = (date, local) => {
+    setLocal(local);
     setSelectedDate(date);
     setIsScheduleModalOpen(false);
   };
@@ -82,6 +72,10 @@ function ShoppingCart() {
       total += product.amount * quantity;
     });
     return total;
+  };
+
+  function removePontosEVirgulas(valor) {
+    return valor.replace(/[.,]/g, '').trim();
   };
 
   const confirmPurchase = async () => {
@@ -148,8 +142,9 @@ function ShoppingCart() {
                       type="number"
                       value={productQuantities[product.id] || ''}
                       onChange={(e) => {
+                        const novoValor = removePontosEVirgulas(e.target.value);
                         const newQuantities = { ...productQuantities };
-                        newQuantities[product.id] = e.target.value;
+                        newQuantities[product.id] = novoValor;
                         setProductQuantities(newQuantities);
                       }}
                       className="quantity-input"
