@@ -26,7 +26,7 @@ const SchedulePurchase = ({ onSchedule }) => {
   }, []);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = JSON.parse(sessionStorage.getItem('user'));
     if (user && user[0].uuid) {
       setUserId(user[0].uuid);
     }
