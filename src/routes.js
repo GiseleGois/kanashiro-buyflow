@@ -9,7 +9,7 @@ import History from './pages/history';
 
 function Routes() {
   return (
-    <Router basename='/tothepoint_login'>
+    <Router>
       <Route path='/' exact component={Login} />
       <Route path='/register' component={Register} />
       <Route path='/home' component={Home} />
