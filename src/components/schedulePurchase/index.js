@@ -73,7 +73,7 @@ const SchedulePurchase = ({ onSchedule }) => {
   };
 
   const confirmNewLocation = () => {
-    if (newLocation.trim() !== '') {
+    if (newLocation.trim() !== '' && newLocation.toLowerCase() !== local.toLowerCase()) {
       setNewLocationModalOpen(false);
       setIsModalOpen(false);
       onSchedule(selectedDate, newLocation);
@@ -152,7 +152,7 @@ const SchedulePurchase = ({ onSchedule }) => {
         shouldCloseOnOverlayClick={false}
       >
         <div className="schedule-modal">
-          <h2>Erro: O nome do local não pode estar em branco.</h2>
+          <h2>Erro: O nome do local não pode estar em branco ou ser igual a: {local}</h2>
           <div className="button-container">
             <button className="close-button" onClick={() => setErrorModalOpen(false)}>Fechar</button>
           </div>
