@@ -28,6 +28,25 @@
   /* Outros estilos para o modal de calendário */
 }
 
+.purchase-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  outline: none;
+}
+
+.purchase-input::placeholder {
+  color: #ccc;
+}
+
+.purchase-input:focus {
+  border-color: #007BFF;
+}
+
+
 .confirmation-modal-content {
   z-index: 20; /* Um valor maior para garantir que fique por cima */
   /* Outros estilos para o modal de confirmação */

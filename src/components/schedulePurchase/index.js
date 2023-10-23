@@ -18,12 +18,7 @@ const SchedulePurchase = ({ onSchedule }) => {
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const [newLocationModalOpen, setNewLocationModalOpen] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
-
-  useEffect(() => {
-    const location = window.location.pathname;
-    const localPart = location.substring('/schedule-purchase/'.length);
-    setLocal(localPart);
-  }, []);
+  const [duplicatedModalOpen, setDuplicatedModalOpen] = useState(false);
 
   useEffect(() => {
     const user = JSON.parse(sessionStorage.getItem('user'));
@@ -48,23 +43,28 @@ const SchedulePurchase = ({ onSchedule }) => {
     return date >= today;
   };
 
+  const onClose = () => {
+    history.push('/home');
+  };
+
   const handleSchedule = async () => {
     if (isFutureDate(selectedDate)) {
       const userHasPurchase = await checkUserPurchases(selectedDate, local, userId);
+      console.log('userHasPurchase', userHasPurchase);
 
       if (userHasPurchase) {
         setConfirmationModalOpen(true);
       } else {
-        setIsModalOpen(false);
-        const locationToSchedule = newLocation || local;
-        onSchedule(selectedDate, locationToSchedule);
+        if (local && local.trim() !== '') {
+          setIsModalOpen(false);
+          const locationToSchedule = newLocation || local;
+          onSchedule(selectedDate, locationToSchedule);
+        } else {
+          // Nome do local está vazio, exibir o modal de erro
+          setErrorModalOpen(true);
+        }
       }
     }
-  };
-
-
-  const onClose = () => {
-    history.push('/home');
   };
 
   const confirmNewPurchase = () => {
@@ -73,13 +73,13 @@ const SchedulePurchase = ({ onSchedule }) => {
   };
 
   const confirmNewLocation = () => {
-    if (newLocation.trim() !== '' && newLocation.toLowerCase() !== local.toLowerCase()) {
+    if (newLocation && newLocation.trim() !== '' && newLocation.toLowerCase() !== local.toLowerCase()) {
       setNewLocationModalOpen(false);
       setIsModalOpen(false);
       onSchedule(selectedDate, newLocation);
     } else {
-      // Nome do local está vazio, exibir o modal de erro
-      setErrorModalOpen(true);
+      // Nome do local está vazio ou igual ao local atual, exibir o modal de erro
+      setDuplicatedModalOpen(true);
     }
   };
 
@@ -93,7 +93,14 @@ const SchedulePurchase = ({ onSchedule }) => {
         shouldCloseOnOverlayClick={false}
       >
         <div className="schedule-modal">
-          <h2>Escolha uma data para realizar o pedido:</h2>
+          <h2>Insira um nome para seu pedido e escolha a data para ele ser produzido</h2>
+          <input
+            type="text"
+            placeholder='ex: cecap'
+            className="purchase-input"
+            value={local}
+            onChange={(e) => setLocal(e.target.value)}
+          />
           <Calendar
             onChange={setSelectedDate}
             value={selectedDate}
@@ -135,6 +142,7 @@ const SchedulePurchase = ({ onSchedule }) => {
           <input
             type="text"
             placeholder='ex: cecap'
+            className="purchase-input"
             value={newLocation}
             onChange={(e) => setNewLocation(e.target.value)}
           />
@@ -146,13 +154,27 @@ const SchedulePurchase = ({ onSchedule }) => {
       </Modal>
 
       <Modal
+        isOpen={duplicatedModalOpen}
+        className="purchase-modal-content"
+        overlayClassName="purchase-modal-glass"
+        shouldCloseOnOverlayClick={false}
+      >
+        <div className="schedule-modal">
+          <h2>Erro: Já existe um pedido nessa mesma data com o mesmo nome, por favor insira um nome diferente.</h2>
+          <div className="button-container">
+            <button className="close-button" onClick={() => setDuplicatedModalOpen(false)}>Fechar</button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
         isOpen={errorModalOpen}
         className="purchase-modal-content"
         overlayClassName="purchase-modal-glass"
         shouldCloseOnOverlayClick={false}
       >
         <div className="schedule-modal">
-          <h2>Erro: O nome do local não pode estar em branco ou ser igual a: {local}</h2>
+          <h2>Erro: O nome do local não pode estar em branco</h2>
           <div className="button-container">
             <button className="close-button" onClick={() => setErrorModalOpen(false)}>Fechar</button>
           </div>
