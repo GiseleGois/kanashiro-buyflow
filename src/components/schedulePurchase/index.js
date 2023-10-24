@@ -11,6 +11,8 @@ Modal.setAppElement('#root');
 const SchedulePurchase = ({ onSchedule }) => {
   const history = useHistory();
   const [selectedDate, setSelectedDate] = useState(null);
+  const [minDate, setMinDate] = useState(null);
+  const [maxDate, setMaxDate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [newLocation, setNewLocation] = useState('');
   const [userId, setUserId] = useState('');
@@ -29,12 +31,14 @@ const SchedulePurchase = ({ onSchedule }) => {
 
   useEffect(() => {
     const now = new Date();
-    const tomorrow = new Date(now);
-    if (now.getHours() >= 4) {
-      tomorrow.setDate(now.getDate() + 1);
-    }
-    tomorrow.setHours(4, 0, 0, 0);
-    setSelectedDate(tomorrow);
+    const today = new Date(now);
+    today.setHours(4, 0, 0, 0);
+    const maxDate = new Date(today);
+    maxDate.setDate(today.getDate() + 1);
+    maxDate.setHours(3, 59, 59, 59);
+    setSelectedDate(null);
+    setMinDate(today);
+    setMaxDate(maxDate);
   }, []);
 
   const isFutureDate = (date) => {
@@ -42,26 +46,32 @@ const SchedulePurchase = ({ onSchedule }) => {
     today.setHours(4, 0, 0, 0);
     return date >= today;
   };
+  const isWithin24Hours = (date) => {
+    const now = new Date();
+    const next24Hours = new Date(now);
+    next24Hours.setHours(4, 0, 0, 0);
+    next24Hours.setDate(now.getDate() + 1);
+    const threeFiftyNineAM = new Date(now);
+    threeFiftyNineAM.setHours(3, 59, 59, 999);
+    return date >= next24Hours || date <= threeFiftyNineAM;
+  };
 
   const onClose = () => {
     history.push('/home');
   };
 
   const handleSchedule = async () => {
-    if (isFutureDate(selectedDate)) {
-      const userHasPurchase = await checkUserPurchases(selectedDate, local, userId);
-      console.log('userHasPurchase', userHasPurchase);
-
-      if (userHasPurchase) {
-        setConfirmationModalOpen(true);
+    if (selectedDate && isFutureDate(selectedDate) && !isWithin24Hours(selectedDate)) {
+      if (!local || local.trim() === '') {
+        setErrorModalOpen(true);
       } else {
-        if (local && local.trim() !== '') {
+        const userHasPurchase = await checkUserPurchases(selectedDate, local, userId);
+        if (userHasPurchase) {
+          setConfirmationModalOpen(true);
+        } else {
           setIsModalOpen(false);
           const locationToSchedule = newLocation || local;
           onSchedule(selectedDate, locationToSchedule);
-        } else {
-          // Nome do local está vazio, exibir o modal de erro
-          setErrorModalOpen(true);
         }
       }
     }
@@ -78,11 +88,9 @@ const SchedulePurchase = ({ onSchedule }) => {
       setIsModalOpen(false);
       onSchedule(selectedDate, newLocation);
     } else {
-      // Nome do local está vazio ou igual ao local atual, exibir o modal de erro
       setDuplicatedModalOpen(true);
     }
   };
-
 
   return (
     <div>
@@ -101,11 +109,13 @@ const SchedulePurchase = ({ onSchedule }) => {
             value={local}
             onChange={(e) => setLocal(e.target.value)}
           />
+
           <Calendar
             onChange={setSelectedDate}
             value={selectedDate}
-            minDate={new Date(new Date().setHours(3, 59, 59, 59))}
-            tileDisabled={({ date }) => !isFutureDate(date)}
+            minDate={minDate}
+            maxDate={maxDate}
+            tileDisabled={({ date }) => !isFutureDate(date) || isWithin24Hours(date)}
             className="calendar"
           />
 
@@ -180,7 +190,6 @@ const SchedulePurchase = ({ onSchedule }) => {
           </div>
         </div>
       </Modal>
-
     </div>
   );
 };
