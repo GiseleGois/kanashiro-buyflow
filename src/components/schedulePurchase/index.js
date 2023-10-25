@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
-import 'react-calendar/dist/Calendar.css';
-import Calendar from 'react-calendar';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import { useHistory } from 'react-router-dom';
 import './style.css';
 import { checkUserPurchases } from '../../commons/checkPurchases';
@@ -16,11 +16,15 @@ const SchedulePurchase = ({ onSchedule }) => {
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [newLocation, setNewLocation] = useState('');
   const [userId, setUserId] = useState('');
-  const [local, setLocal] = useState();
+  const [local, setLocal] = useState('');
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const [newLocationModalOpen, setNewLocationModalOpen] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [duplicatedModalOpen, setDuplicatedModalOpen] = useState(false);
+
+  const now = new Date();
+  const today = new Date(now);
+  today.setHours(4, 0, 0, 0);
 
   useEffect(() => {
     const user = JSON.parse(sessionStorage.getItem('user'));
@@ -30,30 +34,25 @@ const SchedulePurchase = ({ onSchedule }) => {
   }, []);
 
   useEffect(() => {
-    const now = new Date();
-    const today = new Date(now);
-    today.setHours(4, 0, 0, 0);
-    const maxDate = new Date(today);
-    maxDate.setDate(today.getDate() + 1);
-    maxDate.setHours(3, 59, 59, 59);
-    setSelectedDate(null);
+    const fourAM = new Date(now);
+    fourAM.setHours(4, 0, 0, 0);
+
+    // Se a hora atual for menor que 4:00 AM, defina a data máxima como a data atual
+    if (now < fourAM) {
+      setMaxDate(today);
+    } else {
+      // Caso contrário, defina a data máxima como a data atual mais um dia
+      const nextDay = new Date(today);
+      nextDay.setDate(today.getDate() + 1);
+      setMaxDate(nextDay);
+    }
+
+    setSelectedDate(today);
     setMinDate(today);
-    setMaxDate(maxDate);
   }, []);
 
   const isFutureDate = (date) => {
-    const today = new Date();
-    today.setHours(4, 0, 0, 0);
-    return date >= today;
-  };
-  const isWithin24Hours = (date) => {
-    const now = new Date();
-    const next24Hours = new Date(now);
-    next24Hours.setHours(4, 0, 0, 0);
-    next24Hours.setDate(now.getDate() + 1);
-    const threeFiftyNineAM = new Date(now);
-    threeFiftyNineAM.setHours(3, 59, 59, 999);
-    return date >= next24Hours || date <= threeFiftyNineAM;
+    return date >= today; // 'today' agora é acessível nesta função
   };
 
   const onClose = () => {
@@ -61,7 +60,11 @@ const SchedulePurchase = ({ onSchedule }) => {
   };
 
   const handleSchedule = async () => {
-    if (selectedDate && isFutureDate(selectedDate) && !isWithin24Hours(selectedDate)) {
+    console.log('Botão "Agendar" clicado');
+    console.log('selectedDate:', selectedDate);
+    console.log('isFutureDate(selectedDate):', isFutureDate(selectedDate));
+    console.log('local:', local);
+    if (selectedDate && isFutureDate(selectedDate)) {
       if (!local || local.trim() === '') {
         setErrorModalOpen(true);
       } else {
@@ -101,27 +104,30 @@ const SchedulePurchase = ({ onSchedule }) => {
         shouldCloseOnOverlayClick={false}
       >
         <div className="schedule-modal">
-          <h2>Insira um nome para seu pedido e escolha a data para ele ser produzido</h2>
+          <h2>Digite um nome para o seu pedido e escolha a data em que deseja que ele seja produzido.</h2>
           <input
             type="text"
-            placeholder='ex: cecap'
+            placeholder="ex: cecap"
             className="purchase-input"
             value={local}
             onChange={(e) => setLocal(e.target.value)}
           />
 
-          <Calendar
-            onChange={setSelectedDate}
-            value={selectedDate}
+          <DatePicker
+            selected={selectedDate}
             minDate={minDate}
             maxDate={maxDate}
-            tileDisabled={({ date }) => !isFutureDate(date) || isWithin24Hours(date)}
-            className="calendar"
+            onChange={date => setSelectedDate(date)}
+            dateFormat="dd/MM/yyyy" // Define o formato da data
           />
 
           <div className="button-container">
-            <button className="schedule-button" onClick={handleSchedule}>Agendar</button>
-            <button className="close-button" onClick={onClose}>Voltar</button>
+            <button className="schedule-button" onClick={handleSchedule}>
+              Agendar
+            </button>
+            <button className="close-button" onClick={onClose}>
+              Voltar
+            </button>
           </div>
         </div>
       </Modal>
