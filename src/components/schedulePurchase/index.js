@@ -21,6 +21,7 @@ const SchedulePurchase = ({ onSchedule }) => {
   const [newLocationModalOpen, setNewLocationModalOpen] = useState(false);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [duplicatedModalOpen, setDuplicatedModalOpen] = useState(false);
+  const [excededTimeModalOpen, setExcededTimeModalOpen] = useState(false);
 
   const now = new Date();
   const today = new Date(now);
@@ -37,11 +38,9 @@ const SchedulePurchase = ({ onSchedule }) => {
     const fourAM = new Date(now);
     fourAM.setHours(4, 0, 0, 0);
 
-    // Se a hora atual for menor que 4:00 AM, defina a data máxima como a data atual
     if (now < fourAM) {
       setMaxDate(today);
     } else {
-      // Caso contrário, defina a data máxima como a data atual mais um dia
       const nextDay = new Date(today);
       nextDay.setDate(today.getDate() + 1);
       setMaxDate(nextDay);
@@ -52,33 +51,39 @@ const SchedulePurchase = ({ onSchedule }) => {
   }, []);
 
   const isFutureDate = (date) => {
-    return date >= today; // 'today' agora é acessível nesta função
+    return date >= today;
   };
 
   const onClose = () => {
     history.push('/home');
   };
 
+  const isPast4AMOnDate = (date) => {
+    const fourAMOnDate = new Date(date);
+    fourAMOnDate.setHours(4, 0, 0, 0);
+    return now > fourAMOnDate;
+  };
+
   const handleSchedule = async () => {
-    console.log('Botão "Agendar" clicado');
-    console.log('selectedDate:', selectedDate);
-    console.log('isFutureDate(selectedDate):', isFutureDate(selectedDate));
-    console.log('local:', local);
     if (selectedDate && isFutureDate(selectedDate)) {
-      if (!local || local.trim() === '') {
-        setErrorModalOpen(true);
+      if (isPast4AMOnDate(selectedDate)) {
+        setExcededTimeModalOpen(true);
       } else {
-        const userHasPurchase = await checkUserPurchases(selectedDate, local, userId);
-        if (userHasPurchase) {
-          setConfirmationModalOpen(true);
+        if (!local || local.trim() === '') {
+          setErrorModalOpen(true);
         } else {
-          setIsModalOpen(false);
-          const locationToSchedule = newLocation || local;
-          onSchedule(selectedDate, locationToSchedule);
+          const userHasPurchase = await checkUserPurchases(selectedDate, local, userId);
+          if (userHasPurchase) {
+            setConfirmationModalOpen(true);
+          } else {
+            setIsModalOpen(false);
+            const locationToSchedule = newLocation || local;
+            onSchedule(selectedDate, locationToSchedule);
+          }
         }
       }
     }
-  };
+  }
 
   const confirmNewPurchase = () => {
     setConfirmationModalOpen(false);
@@ -118,7 +123,7 @@ const SchedulePurchase = ({ onSchedule }) => {
             minDate={minDate}
             maxDate={maxDate}
             onChange={date => setSelectedDate(date)}
-            dateFormat="dd/MM/yyyy" // Define o formato da data
+            dateFormat="dd/MM/yyyy"
           />
 
           <div className="button-container">
@@ -193,6 +198,20 @@ const SchedulePurchase = ({ onSchedule }) => {
           <h2>Erro: O nome do local não pode estar em branco</h2>
           <div className="button-container">
             <button className="close-button" onClick={() => setErrorModalOpen(false)}>Fechar</button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        isOpen={excededTimeModalOpen}
+        className="purchase-modal-content"
+        overlayClassName="purchase-modal-glass"
+        shouldCloseOnOverlayClick={false}
+      >
+        <div className="schedule-modal">
+          <h2>Infelizmente o tempo limite para efetuar pedidos nessa data já expirou, selecione outro dia..</h2>
+          <div className="button-container">
+            <button className="close-button" onClick={() => setExcededTimeModalOpen(false)}>Fechar</button>
           </div>
         </div>
       </Modal>
