@@ -9,8 +9,17 @@ const {
 const listProducts = async () => {
   try {
     const { data } = await axios.get(`${url}/fetch-product-type`);
-    const getProducts = data.filter(product => product.type !== 'papel' && product.type !== 'entrega-p' && product.type !== 'entrega-d');
-    return getProducts;
+    const checkUser = await userById(auth.currentUser.uid);
+
+    if (checkUser) {
+      if (checkUser[0].privileges === true) {
+        return data.filter(product => product.type !== 'papel' && product.type !== 'entrega-p' && product.type !== 'entrega-d');
+      } else {
+        return data.filter(product => product.type !== 'papel' && product.type !== 'entrega-p' && product.type !== 'entrega-d' && product.name !== 'Coxinha/Catupiry');
+      }
+    }
+
+    return [];
   } catch (error) {
     throw new Error(`Falha ao obter todos os produtos: ${error}`);
   }
@@ -19,8 +28,17 @@ const listProducts = async () => {
 const listProductsWithDiscount = async (discountLvl) => {
   try {
     const { data } = await axios.get(`${url}/discount/${discountLvl}`);
-    const getProducts = data.filter(product => product.type !== 'papel' && product.type !== 'entrega-p' && product.type !== 'entrega-d');
-    return getProducts;
+    const checkUser = await userById(auth.currentUser.uid);
+
+    if (checkUser) {
+      if (checkUser[0].privileges === true) {
+        return data.filter(product => product.type !== 'papel' && product.type !== 'entrega-p' && product.type !== 'entrega-d');
+      } else {
+        return data.filter(product => product.type !== 'papel' && product.type !== 'entrega-p' && product.type !== 'entrega-d' && product.name !== 'Coxinha/Catupiry');
+      }
+    }
+
+    return [];
   } catch (error) {
     throw new Error(`Falha ao obter todos os produtos com desconto: ${error}`);
   }
