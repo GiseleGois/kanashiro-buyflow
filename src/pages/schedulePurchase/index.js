@@ -28,7 +28,7 @@ function ShoppingCart() {
         const user = await userById();
         setUserHasDiscount(user[0].discount === true);
         if (user[0].discount === true) {
-          const productsWithDiscount = await listProductsWithDiscount();
+          const productsWithDiscount = await listProductsWithDiscount(user[0].discount_lvl);
 
           setProducts(productsWithDiscount);
         } else {

@@ -16,9 +16,9 @@ const listProducts = async () => {
   }
 };
 
-const listProductsWithDiscount = async () => {
+const listProductsWithDiscount = async (discountLvl) => {
   try {
-    const { data } = await axios.get(`${url}/discount`);
+    const { data } = await axios.get(`${url}/discount/${discountLvl}`);
     const getProducts = data.filter(product => product.type !== 'papel' && product.type !== 'entrega-p' && product.type !== 'entrega-d');
     return getProducts;
   } catch (error) {
