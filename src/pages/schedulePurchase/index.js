@@ -21,6 +21,7 @@ function ShoppingCart() {
   const [error, setError] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -109,6 +110,10 @@ function ShoppingCart() {
     }
   };
 
+  useEffect(() => {
+    setIsButtonDisabled(Object.keys(productQuantities).length === 0 || isLoading);
+  }, [productQuantities, isLoading]);
+
   return (
     <div className="schedule-container">
       {isLoading && <Loading />}
@@ -135,7 +140,7 @@ function ShoppingCart() {
                 <tr key={product.id}>
                   <td>
                     <span className="product-name">{product.name}</span>
-                    <p className="product-subtitle">Valor unitário: R$ {parseFloat(product.amount).toFixed(2)}</p>
+                    <p className="product-subtitle">Valor unitário: R$ {product.amount.toFixed(2)}</p>
                   </td>
                   <td>
                     <input
@@ -163,7 +168,7 @@ function ShoppingCart() {
               <button
                 onClick={handleConfirmPurchase}
                 className="confirm-button"
-                disabled={Object.keys(productQuantities).length === 0}
+                disabled={isButtonDisabled}
               >
                 Finalizar Compra
               </button>
