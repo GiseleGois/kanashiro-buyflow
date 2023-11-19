@@ -11,4 +11,7 @@ module.exports = {
     5: 'SEXTA-FEIRA',
     6: 'SÁBADO',
   },
+  BILLING_INVOICE: {
+    OVERDUE_INVOICE: 'OVERDUE_INVOICE',
+  }
 };

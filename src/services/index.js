@@ -17,7 +17,7 @@ const listProducts = async () => {
         }
       });
     }
-    
+
     if (checkUser) {
       if (checkUser[0].privileges === true) {
         return data.filter(product => product.type !== 'papel' && product.type !== 'entrega-p' && product.type !== 'entrega-d');
@@ -139,6 +139,18 @@ const getOrders = async (uuid) => {
   }
 };
 
+const showOverdueInvoice = async (uuid) => {
+  try {
+    const userUUID = uuid || auth.currentUser.uid;
+    const { data } = await axios.get(`${url}/invoices`, {
+      params: { userId: userUUID },
+    });
+
+    return data;
+  } catch (error) {
+    throw new Error(`Falha ao obter as faturas: ${error}`);
+  }
+}
 
 export {
   listProducts,
@@ -148,4 +160,5 @@ export {
   userById,
   sendOrder,
   getOrders,
+  showOverdueInvoice,
 };

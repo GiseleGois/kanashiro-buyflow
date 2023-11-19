@@ -11,7 +11,7 @@ const Modal = ({ message, onClose, showSuccessModal, successMessage }) => {
           <p>{message}</p>
         )}
         <button onClick={onClose} className="modal-close-button">
-          Close
+          Fechar
         </button>
       </div>
     </div>
