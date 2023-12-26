@@ -54,6 +54,7 @@ function ShoppingCart() {
 
   const handleConfirmPurchase = () => {
     setIsConfirmModalOpen(true);
+    setIsButtonDisabled(true);
   };
 
   const handleConfirmModal = async () => {

@@ -126,6 +126,7 @@ const sendOrder = async (selectedItems, total, location, selectedDate) => {
       local: location,
       userId: auth.currentUser.uid,
       scheduled: selectedDate,
+      isStore: `${verifyUser[0].isStore}`,
     };
 
     const { data } = await axios.post(`${url}/order`, payload);
