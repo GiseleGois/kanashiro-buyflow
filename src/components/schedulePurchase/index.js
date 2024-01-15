@@ -42,7 +42,7 @@ const SchedulePurchase = ({ onSchedule }) => {
       setMaxDate(today);
     } else {
       const nextDay = new Date(today);
-      nextDay.setDate(today.getDate() + 1);
+      nextDay.setDate(today.getDate() + 2);
       setMaxDate(nextDay);
     }
 

@@ -10,7 +10,7 @@ const listProducts = async () => {
   try {
     const { data } = await axios.get(`${url}/fetch-product-type`);
     const checkUser = await userById(auth.currentUser.uid);
-    if (checkUser[0].uuid === 'bSLNXJBZ6bNvDoF3hvSx4wX9ONa2') {
+    if (checkUser[0].uuid === 'bSLNXJBZ6bNvDoF3hvSx4wX9ONa2' || checkUser[0].uuid === 'aS4V9FUXGFNIYpCVZAsQrUDABoW2') {
       data.map(product => {
         if (product.name === 'Coxinha/Catupiry') {
           product.amount = 4;
