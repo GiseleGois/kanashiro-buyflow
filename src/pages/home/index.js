@@ -5,15 +5,12 @@ import { useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faStore, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import GenericModal from '../../commons/modal/genericModal';
-import { showOverdueInvoice } from '../../services'
-import { renderModalMessage } from '../../commons/renderMessageInvoice/renderMessageInvoice';
 
 function Home() {
   const history = useHistory();
   const [selectedLocal, setSelectedLocal] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [userName, setUserName] = useState('');
-  const [messageDisplayed, setMessageDisplayed] = useState(false);
   const [modalContent, setModalContent] = useState(null);
 
   useEffect(() => {
@@ -25,21 +22,13 @@ function Home() {
           setUserName(user[0].name);
         }
 
-        if (user && user[0] && user[0].uuid && !messageDisplayed) {
-          const overdueInvoice = await showOverdueInvoice(user[0].uuid);
-          if (overdueInvoice) {
-            setModalContent(renderModalMessage('OVERDUE_INVOICE', userName));
-            setShowModal(true);
-          }
-          setMessageDisplayed(true);
-        }
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     fetchData();
-  }, [messageDisplayed, userName]);
+  }, [userName]);
 
   const handleLogout = () => {
     auth.signOut().then(() => {
