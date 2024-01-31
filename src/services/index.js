@@ -10,10 +10,10 @@ const listProducts = async () => {
   try {
     const { data } = await axios.get(`${url}/fetch-product-type`);
     const checkUser = await userById(auth.currentUser.uid);
-    if (checkUser[0].uuid === 'bSLNXJBZ6bNvDoF3hvSx4wX9ONa2' || checkUser[0].uuid === 'aS4V9FUXGFNIYpCVZAsQrUDABoW2') {
+    if (checkUser[0].uuid === 'bSLNXJBZ6bNvDoF3hvSx4wX9ONa2' || checkUser[0].uuid === 'aS4V9FUXGFNIYpCVZAsQrUDABoW2' || checkUser[0].uuid === 'hGaqbifw4UVaEI9XwMepEQKyVzq2') {
       data.map(product => {
         if (product.name === 'Coxinha/Catupiry') {
-          product.amount = 4;
+          product.amount = 4.3;
         }
       });
     }
@@ -26,6 +26,13 @@ const listProducts = async () => {
 
     if (checkUser) {
       if (checkUser[0].privileges === true) {
+        if (checkUser[0].uuid === 'L8SeqPKMhwX7NQUBsI21GL0vMmC2') {
+          data.map(product => {
+            if (product.type === 'salgado') {
+              product.amount = 3.5;
+            }
+          });
+        }
         return data.filter(product => product.type !== 'papel' && product.type !== 'entrega-p' && product.type !== 'entrega-d');
       } else {
         return data.filter(product => product.type !== 'papel' && product.type !== 'entrega-p' && product.type !== 'entrega-d' && product.name !== 'Coxinha/Catupiry');
